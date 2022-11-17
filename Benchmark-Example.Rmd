@@ -1,0 +1,32 @@
+---
+title: "Benchmark-Example"
+author: "Kaylee Carroll and Emily Thompson"
+date: "2022-11-14"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Hemophilia B Percentage in Various European Countries:
+
+Data obtained from the World Hemophiliac Foundation was used to create a bar graph of various European countries and the percentage of the overall population with Hemophilia B.
+
+```{r}
+
+#Upload spreadsheet. 
+Europe_HemophiliaB_Percentage <-read.csv("Europe_HemophiliaB_Percentage.csv")
+
+#Delete NO VALUE rows, create vector to delete values. 
+Europe_HemophiliaB_Percentage <-Europe_HemophiliaB_Percentage[-c(2,5,8,9,10,11,13,21,24,25,27,29,30,31,32,35,41,50),]
+
+#Install and access ggplot
+install.packages("ggplot2")
+library(ggplot2)
+theme(axis.text.x = element_text(angle=45))
+
+#Create Bar Graph of all the countries and the percentage of Hemophilia B in the populations 
+ggplot(data = Europe_HemophiliaB_Percentage, aes(x=European.Countries, y=Percentage.with.Hemophilia.B)) + geom_bar(stat = "identity", color="blue", fill="black") + theme_classic() + labs(x = "European Countries", y= "Percentage of Hemophilia B") + theme(axis.text.x = element_text(angle = 45, size = 9,color = "black", face = "plain", vjust = 1, hjust = 1),plot.margin = margin(10, 10, 10, 10))
+
+```
