@@ -1,0 +1,82 @@
+---
+title: "Figures-Data-Backup"
+author: "Kaylee and Emily"
+date: "2022-10-31"
+output: html_document
+---
+
+## Package Installation
+
+```{r}
+install.packages("ggplot2")
+install.packages("dplyr")
+```
+
+## Hemophilia in Europe Table
+
+Note: Table of Hemophilia B cases across select European countries. The UK and Russia have the most reported cases (1,569 and 1,274 people). Spain has the least amount of cases at 280 people.
+
+```{r}
+# Creates a data frame table 
+European_Country <- c("United Kingdom", "Russia", "Germany","Spain")
+#Define values in Hemophilia_Cases as a number 
+Hemophilia_Cases <-c(1569,1274,774,280)
+Hemophilia_Europe <- data.frame(European_Country, Hemophilia_Cases)
+#Define Countries as a factor, setting their order
+Hemophilia_Europe$European_Country <- factor(Hemophilia_Europe$European_Country, levels=Hemophilia_Europe$European_Country)
+print (Hemophilia_Europe)
+```
+
+## Figure 2: Hemophilia B in the United Kingdom, Russia, Germany, and Spain
+
+Caption:
+
+```{r}
+# Access ggplot 
+library(ggplot2)
+# Create a bar graph 
+ ggplot(data = Hemophilia_Europe, aes(x=Hemophilia_Cases, y=European_Country)) + geom_bar(stat = "identity", color="blue", fill="red") + theme_classic() + labs(x = "Hemophilia B Cases", y= "European Countries with Affected Royals")
+```
+
+##Figure 3: Pedigree of Known Carriers and Affected Royal Family Members Caption and insert
+
+##Figure 4: Percentage of the populations within European Countries that have Hemophilia B. Caption
+
+```{r}
+#Upload spreadsheet. 
+Europe_HemophiliaB_Percentage <-read.csv("Europe_HemophiliaB_Percentage.csv")
+
+#Delete NO VALUE rows, create vector to delete values. 
+Europe_HemophiliaB_Percentage <-Europe_HemophiliaB_Percentage[-c(2,5,8,9,10,11,13,21,24,25,27,29,30,31,32,35,41,50),]
+
+#Access ggplot
+library(ggplot2)
+theme(axis.text.x = element_text(angle=45))
+
+#Create Bar Graph of all the countries and the percentage of Hemophilia B in the populations 
+ggplot(data = Europe_HemophiliaB_Percentage, aes(x=European.Countries, y=Percentage.with.Hemophilia.B)) + geom_bar(stat = "identity", color="blue", fill="black") + theme_classic() + labs(x = "European Countries", y= "Percentage of Hemophilia B") + theme(axis.text.x = element_text(angle = 45, size = 9,color = "black", face = "plain", vjust = 1, hjust = 1),plot.margin = margin(10, 10, 10, 10))
+
+```
+
+Figure 5: Heat Map\*
+
+```{r}
+
+#Upload spreadsheet
+LikelihoodScores <-read.csv("LikelihoodScores.csv")
+
+#Access ggplot 
+library(ggplot2)
+#Install reshape2
+install.packages("reshape2")
+library(reshape2)
+
+#Create heat map of royal houses and average score of Hemophilia in each house
+data <- cor(LikelihoodScores[sapply(LikelihoodScores,is.numeric)])
+ 
+data1 <- melt(data)
+ 
+ggplot(data1, aes(x = Var1,
+                  y = Var2,
+                  fill = value))+geom_tile()
+```
