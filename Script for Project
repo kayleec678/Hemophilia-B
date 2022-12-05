@@ -1,0 +1,60 @@
+##Package installation
+install.packages("ggplot2")
+install.packages("dplyr")
+install.packages("tidyverse")
+
+##Creating Data frame Table
+# Creates a data frame table 
+European_Country <- c("United Kingdom", "Russia", "Germany","Spain")
+#Define values in Hemophilia_Cases as a number 
+Hemophilia_Cases <-c(1569,1274,774,280)
+Hemophilia_Europe <- data.frame(European_Country, Hemophilia_Cases)
+#Define Countries as a factor, setting their order
+Hemophilia_Europe$European_Country <- factor(Hemophilia_Europe$European_Country, levels=Hemophilia_Europe$European_Country)
+print (Hemophilia_Europe)
+
+##Making Horizontal Bar Graph
+
+# Access ggplot 
+library(ggplot2)
+# Create a bar graph 
+ggplot(data = Hemophilia_Europe, aes(x=Hemophilia_Cases, y=European_Country)) + geom_bar(stat = "identity", color="black", fill="dark red") + theme_classic() + labs(x = "Hemophilia B Cases", y= "European Countries with Affected Royals")
+
+#Upload spreadsheet. 
+Europe_HemophiliaB_Percentage <-read.csv("Europe_HemophiliaB_Percentage.csv")
+
+#Delete NO VALUE rows, create vector to delete values. 
+Europe_HemophiliaB_Percentage <-Europe_HemophiliaB_Percentage[-c(2,5,8,9,10,11,13,21,24,25,27,29,30,31,32,35,41,50),]
+
+##Making Large Vertical Bar Graph
+
+#Access ggplot
+library(ggplot2)
+theme(axis.text.x = element_text(angle=45))
+
+#Made these values numeric instead of characters to reorder them.
+Europe_HemophiliaB_Percentage$Percentage.with.Hemophilia.B <- as.numeric(Europe_HemophiliaB_Percentage$Percentage.with.Hemophilia.B)
+
+#Create Bar Graph of all the countries and the percentage of Hemophilia B in the populations 
+ggplot(data = Europe_HemophiliaB_Percentage, aes(x=reorder(European.Countries,Percentage.with.Hemophilia.B), y=Percentage.with.Hemophilia.B))+ geom_bar(stat = "identity", color="dark red", fill="salmon", linewidth = .5) + theme_classic() + labs(x = "European Countries", y= "Percentage of Hemophilia B") + theme(axis.text.x = element_text(angle = 45, size = 9, color = "black", face = "plain", vjust = 1, hjust = 1), plot.margin = margin(10, 10, 10, 10))
+
+##Making Heat Density Map 
+
+#Access tidyverse 
+library("tidyverse")
+
+HouseHemoLikelihood <-read.csv("HouseHemoLikelihood.csv")
+#Count likelihood scores of Hemophilia B in Royal Houses
+HouseHemoLikelihood %>%
+  count(Royal.House, Likelihood)
+
+HouseHemoLikelihood$Likelihood[4]<-"Unaffected"
+HouseHemoLikelihood$Likelihood[33]<-"Unaffected"
+HouseHemoLikelihood$Likelihood[34]<-"Unaffected"
+
+#Create a heat map based on likelihood scores
+HouseHemoLikelihood$Likelihood <- factor(HouseHemoLikelihood$Likelihood, levels=c("Confirmed","Carrier","Highly likely", "Probable", "Possible", "Unlikely", "Unaffected"), order=TRUE)
+
+HouseHemoLikelihood %>%
+  count(Royal.House, Likelihood) %>%
+  ggplot(mapping = aes(x = Likelihood, y = Royal.House)) + theme_classic() + geom_tile(mapping = aes(fill = n), colour = "white") + scale_fill_gradient(low = "salmon", high = "dark red") + labs(x = "Likelihood Scores with Hemophilia ", y= "Royal House")+ theme(axis.text.x = element_text(angle = 25,))
